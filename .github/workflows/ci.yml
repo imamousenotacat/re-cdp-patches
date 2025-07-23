@@ -48,14 +48,14 @@ jobs:
         pip install -e .
         python -c "import os; os.environ['TOKENIZERS_PARALLELISM'] = 'false'"
     - name: Install Chrome Browser
-      uses: browser-actions/setup-chrome@v1
+      uses: browser-actions/setup-chrome@v2
+      with:
+        install-dependencies: true
     - name: Install Chromium Driver
-      run: python -m playwright install chromium
+      run: python -m playwright install chromium --with-deps
     - name: Test with PyTest
       run: |
-        Xvfb -ac :100 -screen 0 1280x1024x16 > /dev/null 2>&1 &
-        export DISPLAY=:100.0
-        pytest
+        xvfb-run pytest 2>&1 | tee result.txt
 
 #  Build_Windows:
 #    strategy:
