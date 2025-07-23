@@ -55,7 +55,7 @@ jobs:
       run: python -m playwright install chromium #--with-deps # Only for local executions
     - name: Test with PyTest
       run: |
-        xvfb-run pytest 2>&1 | tee result.txt
+        xvfb-run pytest -v -rA -s
 
 #  Build_Windows:
 #    strategy:
