@@ -47,15 +47,16 @@ jobs:
         pip install -r requirements-test.txt
         pip install -e .
         python -c "import os; os.environ['TOKENIZERS_PARALLELISM'] = 'false'"
-    - name: Install Chrome Browser
-      uses: browser-actions/setup-chrome@v2
-      with:
-        install-dependencies: true
+#    - name: Install Chrome Browser
+#      uses: browser-actions/setup-chrome@v2
+#      with:
+#        install-dependencies: true
     - name: Install Chromium Driver
-      run: python -m playwright install chromium #--with-deps # Only for local executions
+      run: python -m playwright install chromium # --with-deps # Only for local executions
     - name: Test with PyTest
       run: |
         xvfb-run pytest -v -rA -s
+        echo "Exit code from pytest: $?"
 
 #  Build_Windows:
 #    strategy:
