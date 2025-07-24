@@ -118,5 +118,3 @@ async def async_page() -> AsyncGenerator[AsyncPage, None]:
         page = await context.new_page()
         page.async_input = await AsyncInput(browser=context)  # type: ignore[attr-defined]
         yield page
-
-

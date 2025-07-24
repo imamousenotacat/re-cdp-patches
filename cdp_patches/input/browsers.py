@@ -69,7 +69,6 @@ def ws_url_from_url(url: str, timeout: float = 30) -> str:
     return websocket_debugger_url
 
 
-
 # Browser PID
 # Playwright
 def get_sync_playwright_browser_pid(browser: Union[SyncContext, SyncBrowser]) -> int:
@@ -257,5 +256,3 @@ async def get_async_scale_factor(browser: async_browsers) -> int:
         return await get_async_playwright_scale_factor(browser)
 
     raise ValueError("Invalid browser type.")
-
-
