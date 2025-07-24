@@ -23,8 +23,7 @@ jobs:
         run: flake8 .
       - name: (Linting) MyPy
         run: |
-          mypy --install-types --non-interactive
-          mypy .
+          mypy ./ --install-types --non-interactive
       - name: (Linting) Black
         run: black . --check
 
