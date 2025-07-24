@@ -19,6 +19,7 @@ try:
     from playwright.sync_api import Browser as PlaywrightSyncBrowser
     from playwright.sync_api import BrowserContext as PlaywrightSyncContext
     from playwright.sync_api import Error as PlaywrightSyncError
+
     AsyncBrowser = PatchrightAsyncBrowser | PlaywrightAsyncBrowser
     AsyncContext = PatchrightAsyncContext | PlaywrightAsyncContext
     AsyncError = (PatchrightAsyncError, PlaywrightAsyncError)
