@@ -1,24 +1,21 @@
 <h1 align="center">
-    CDP-Patches v1.0
+    re-cdp-patches
 </h1>
 
 
 <p align="center">
-    <a href="https://github.com/Kaliiiiiiiiii-Vinyzu/CDP-Patches/blob/main/LICENSE">
+    <a href="https://github.com/imamousenotacat/re-cdp-patches/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-GNU%20GPL-green">
     </a>
     <a href="https://python.org/">
         <img src="https://img.shields.io/badge/python-3.9&#8208;3.12-blue">
     </a>
-    <a href="https://pypi.org/project/cdp-patches/">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/cdp-patches.svg?color=1182C3">
-    </a>
-    <a href="https://pepy.tech/project/cdp-patches">
-        <img alt="PyPI" src="https://static.pepy.tech/badge/cdp-patches">
+    <a href="https://pypi.org/project/re-cdp-patches/">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/re-cdp-patches.svg?color=1182C3">
     </a>
     <br>
-    <a href="https://github.com/Kaliiiiiiiiii-Vinyzu/CDP-Patches/actions">
-        <img src="https://github.com/Kaliiiiiiiiii-Vinyzu/CDP-Patches/actions/workflows/ci.yml/badge.svg">
+    <a href="https://github.com/imamousenotacat/re-cdp-patches/actions">
+        <img src="https://github.com/imamousenotacat/re-cdp-patches/actions/workflows/ci.yml/badge.svg">
     </a>
     <a href="http://mypy-lang.org">
         <img src="http://www.mypy-lang.org/static/mypy_badge.svg">
@@ -34,17 +31,22 @@
     </a>
 </p>
 
+This is a pruned version of [CDP Patches](https://github.com/Kaliiiiiiiiii-Vinyzu/CDP-Patches) that only works with Playwright and [Patchright](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright), and that I'm using to enhance the stealthiness of my [Cloudflare-defeating browser-use version](https://github.com/imamousenotacat/re-browser-use).
+
+By using real OS-level events when clicking elements, I can bypass certain additional limitations that occur when using a VPN. 
+
+
 ## Install it from PyPI
 
 ```bash
-pip install cdp-patches
+pip install re-cdp-patches
 ```
 <details>
     <summary>Or for Full Linting</summary>
 
 #### (Includes: playwright, re-patchright)
 ```bash
-pip install cdp-patches[automation_linting]
+pip install re-cdp-patches[automation_linting]
 ```
 </details>
 
@@ -138,7 +140,7 @@ if __name__ == '__main__':
 > Chrome Tabs do have their own process with a process id (pid), but these can not be controlled using Input Events as they´re just engines.
 
 
-Read the [Documentation](https://vinyzu.gitbook.io/cdp-patches-documentation)
+Read the [Documentation](https://vinyzu.gitbook.io/cdp-patches-documentation). Only the part for [Playwright](https://vinyzu.gitbook.io/cdp-patches-documentation/input/playwright-usage) is relevant.
 
 ---
 

@@ -1,15 +1,15 @@
 ---
-description: Welcome to CDP-Patches!
+description: Welcome to re-CDP-Patches!
 ---
 
 # Installation
 
 
 
-## Install it from PyPI [![PyPI version](https://img.shields.io/pypi/v/cdp-patches.svg)](https://pypi.org/project/cdp-patches/)
+## Install it from PyPI [![PyPI version](https://img.shields.io/pypi/v/re-cdp-patches.svg)](https://pypi.org/project/cdp-patches/)
 
 ```bash
-pip install cdp-patches
+pip install re-cdp-patches
 ```
 
 <details>
@@ -19,7 +19,7 @@ pip install cdp-patches
 #### (Includes: playwright, re-patchright)
 
 ```bash
-pip install cdp-patches[automation_linting]
+pip install re-cdp-patches[automation_linting]
 ```
 
 </details>

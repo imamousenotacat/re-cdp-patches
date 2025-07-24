@@ -1,4 +1,4 @@
-name: CDP-Patches CI
+name: re-CDP-Patches CI
 
 on:
   - push
