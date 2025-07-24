@@ -10,15 +10,15 @@ try:
     from patchright.async_api import Browser as PatchrightAsyncBrowser
     from patchright.async_api import BrowserContext as PatchrightAsyncContext
     from patchright.async_api import Error as PatchrightAsyncError
-    from patchright.sync_api import Error as PatchrightSyncError
     from patchright.sync_api import Browser as PatchrightSyncBrowser
     from patchright.sync_api import BrowserContext as PatchrightSyncContext
+    from patchright.sync_api import Error as PatchrightSyncError
     from playwright.async_api import Browser as PlaywrightAsyncBrowser
     from playwright.async_api import BrowserContext as PlaywrightAsyncContext
     from playwright.async_api import Error as PlaywrightAsyncError
-    from playwright.sync_api import Error as PlaywrightSyncError
     from playwright.sync_api import Browser as PlaywrightSyncBrowser
     from playwright.sync_api import BrowserContext as PlaywrightSyncContext
+    from playwright.sync_api import Error as PlaywrightSyncError
     AsyncBrowser = PatchrightAsyncBrowser | PlaywrightAsyncBrowser
     AsyncContext = PatchrightAsyncContext | PlaywrightAsyncContext
     AsyncError = (PatchrightAsyncError, PlaywrightAsyncError)
