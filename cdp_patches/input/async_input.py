@@ -32,7 +32,7 @@ else:
     InputBase = LinuxBase  # type: ignore
     WindowErrors = (AssertionError, ValueError, WindowClosedException)  # type: ignore[assignment]
 
-from .browsers import DriverlessAsyncChrome, async_browsers, get_async_browser_pid, get_async_scale_factor
+from .browsers import async_browsers, get_async_browser_pid, get_async_scale_factor
 from .mouse_trajectory import HumanizeMouseTrajectory
 
 
@@ -75,8 +75,8 @@ class AsyncInput:
         self._base = InputBase(self.pid, self._scale_factor)  # type: ignore
         await self._wait_for_window()
 
-        # Include Windows Scale Factor for every browser except DriverlessSyncChrome
-        if is_windows and not isinstance(self.browser, DriverlessAsyncChrome):
+        # Include Windows Scale Factor for every browser
+        if is_windows:
             self._base.include_windows_scale_factor()
 
     @property

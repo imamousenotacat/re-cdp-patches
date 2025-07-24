@@ -6,10 +6,6 @@ from playwright.async_api import Page as AsyncPage
 from playwright.async_api import async_playwright
 from playwright.sync_api import Page as SyncPage
 from playwright.sync_api import sync_playwright
-from selenium import webdriver as selenium_webdriver
-from selenium.webdriver.chrome.service import Service as SeleniumChromeService
-from selenium_driverless import webdriver as async_webdriver
-from selenium_driverless.sync import webdriver as sync_webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 from cdp_patches.input import AsyncInput, SyncInput
@@ -124,42 +120,3 @@ async def async_page() -> AsyncGenerator[AsyncPage, None]:
         yield page
 
 
-@pytest.fixture
-def sync_driver() -> Generator[sync_webdriver.Chrome, None, None]:
-    options = sync_webdriver.ChromeOptions()
-    for flag in flags:
-        options.add_argument(flag)
-
-    with sync_webdriver.Chrome(options) as driver:
-        driver.sync_input = SyncInput(browser=driver)
-        yield driver
-
-
-@pytest.fixture
-def selenium_driver() -> Generator[selenium_webdriver.Chrome, None, None]:
-    options = selenium_webdriver.ChromeOptions()
-    for flag in flags:
-        options.add_argument(flag)
-
-    # disable logs & automation
-    options.add_experimental_option("excludeSwitches", ["enable-logging", "enable-automation"])
-    options.add_experimental_option("useAutomationExtension", False)
-    options.add_argument("--log-level=3")
-
-    # start url at about:blank
-    options.add_argument("about:blank")
-
-    with selenium_webdriver.Chrome(options, service=SeleniumChromeService(ChromeDriverManager().install())) as driver:
-        driver.sync_input = SyncInput(browser=driver)
-        yield driver
-
-
-@pytest_asyncio.fixture
-async def async_driver() -> AsyncGenerator[async_webdriver.Chrome, None]:
-    options = async_webdriver.ChromeOptions()
-    for flag in flags:
-        options.add_argument(flag)
-
-    async with async_webdriver.Chrome(options) as driver:
-        driver.async_input = await AsyncInput(browser=driver)
-        yield driver

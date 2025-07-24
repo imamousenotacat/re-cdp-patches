@@ -42,7 +42,7 @@ pip install cdp-patches
 <details>
     <summary>Or for Full Linting</summary>
 
-#### (Includes: playwright, re-patchright, selenium, selenium_driverless)
+#### (Includes: playwright, re-patchright)
 ```bash
 pip install cdp-patches[automation_linting]
 ```

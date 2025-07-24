@@ -32,21 +32,9 @@ except ImportError:
     SyncBrowser: Type["SyncBrowser"] = "SyncBrowser"  # type: ignore[no-redef]
     SyncContext: Type["SyncContext"] = "SyncContext"  # type: ignore[no-redef]
 
-try:
-    from selenium.webdriver import Chrome as SeleniumChrome
-except ImportError:
-    SeleniumChrome: Type["SeleniumChrome"] = "SeleniumChrome"  # type: ignore[no-redef]
-
-try:
-    from selenium_driverless.sync.webdriver import Chrome as DriverlessSyncChrome
-    from selenium_driverless.webdriver import Chrome as DriverlessAsyncChrome
-except ImportError:
-    DriverlessAsyncChrome: Type["DriverlessAsyncChrome"] = "DriverlessAsyncChrome"  # type: ignore[no-redef]
-    DriverlessSyncChrome: Type["DriverlessSyncChrome"] = "DriverlessSyncChrome"  # type: ignore[no-redef]
-
-all_browsers = Union[AsyncContext, AsyncBrowser, SyncContext, SyncBrowser, SeleniumChrome, DriverlessAsyncChrome, DriverlessSyncChrome]
-sync_browsers = Union[SeleniumChrome, SyncContext, SyncBrowser, DriverlessSyncChrome]
-async_browsers = Union[AsyncContext, AsyncBrowser, DriverlessAsyncChrome]
+all_browsers = Union[AsyncContext, AsyncBrowser, SyncContext, SyncBrowser]
+sync_browsers = Union[SyncContext, SyncBrowser]
+async_browsers = Union[AsyncContext, AsyncBrowser]
 
 
 class InternalProcessInfo(TypedDict):
@@ -69,22 +57,6 @@ class CDPProcessInfo:
         raise ValueError("No browser process found.")
 
 
-class SeleniumProcessInfoResponse(TypedDict):
-    id: int
-    result: Dict[str, List[InternalProcessInfo]]
-
-
-def process_info_from_ws(ws_url: str) -> Dict[str, List[InternalProcessInfo]]:
-    with client.connect(ws_url) as websocket:
-        websocket.send(json.dumps({"id": 1, "method": "SystemInfo.getProcessInfo"}))
-        for message in websocket:
-            data: SeleniumProcessInfoResponse = json.loads(message)
-            if data.get("id") == 1:
-                return data["result"]
-
-    raise RuntimeError("Couldn't connect to browser.")
-
-
 def ws_url_from_url(url: str, timeout: float = 30) -> str:
     if len(url) < 7 or url[:7] != "http://":
         url = "http://" + url + "/json/version"
@@ -97,33 +69,8 @@ def ws_url_from_url(url: str, timeout: float = 30) -> str:
     return websocket_debugger_url
 
 
-def process_info_from_url(url: str) -> Dict[str, List[InternalProcessInfo]]:
-    ws_url = ws_url_from_url(url)
-    return process_info_from_ws(ws_url)
-
 
 # Browser PID
-# Selenium & Selenium Driverless
-def get_sync_selenium_browser_pid(driver: Union[SeleniumChrome, DriverlessSyncChrome]) -> int:
-    if isinstance(driver, DriverlessSyncChrome):
-        cdp_system_info = driver.base_target.execute_cdp_cmd(cmd="SystemInfo.getProcessInfo")
-    elif isinstance(driver, SeleniumChrome):
-        cdp_system_info = process_info_from_url(driver.capabilities["goog:chromeOptions"]["debuggerAddress"])
-    else:
-        raise ValueError("Invalid browser type.")
-    process_info = CDPProcessInfo(cdp_system_info)
-    browser_info = process_info.get_main_browser()
-    return browser_info["id"]
-
-
-async def get_async_selenium_browser_pid(driver: DriverlessAsyncChrome) -> int:
-    cdp_system_info = await driver.base_target.execute_cdp_cmd(cmd="SystemInfo.getProcessInfo")
-
-    process_info = CDPProcessInfo(cdp_system_info)
-    browser_info = process_info.get_main_browser()
-    return browser_info["id"]
-
-
 # Playwright
 def get_sync_playwright_browser_pid(browser: Union[SyncContext, SyncBrowser]) -> int:
     if isinstance(browser, SyncContext):
@@ -159,39 +106,20 @@ async def get_async_playwright_browser_pid(browser: Union[AsyncContext, AsyncBro
 
 
 def get_sync_browser_pid(browser: sync_browsers) -> int:
-    if isinstance(browser, SeleniumChrome) or isinstance(browser, DriverlessSyncChrome):
-        return get_sync_selenium_browser_pid(browser)
-    elif isinstance(browser, SyncContext) or isinstance(browser, SyncBrowser):
+    if isinstance(browser, SyncContext) or isinstance(browser, SyncBrowser):
         return get_sync_playwright_browser_pid(browser)
 
     raise ValueError("Invalid browser type.")
 
 
 async def get_async_browser_pid(browser: async_browsers) -> int:
-    if isinstance(browser, DriverlessAsyncChrome):
-        return await get_async_selenium_browser_pid(browser)
-    elif isinstance(browser, AsyncContext) or isinstance(browser, AsyncBrowser):
+    if isinstance(browser, AsyncContext) or isinstance(browser, AsyncBrowser):
         return await get_async_playwright_browser_pid(browser)
 
     raise ValueError("Invalid browser type.")
 
 
 # Scale Factor
-# Selenium & Selenium Driverless
-def get_sync_selenium_scale_factor(driver: Union[SeleniumChrome, DriverlessSyncChrome]) -> int:
-    if isinstance(driver, DriverlessSyncChrome):
-        _scale_factor: int = driver.execute_script("return window.devicePixelRatio", unique_context=True)
-        return _scale_factor
-
-    scale_factor: int = driver.execute_script("return window.devicePixelRatio")
-    return scale_factor
-
-
-async def get_async_selenium_scale_factor(driver: DriverlessAsyncChrome) -> int:
-    scale_factor: int = await driver.execute_script("return window.devicePixelRatio", unique_context=True)
-    return scale_factor
-
-
 # Playwright with Runtime Patching
 def get_sync_playwright_scale_factor(browser: Union[SyncContext, SyncBrowser]) -> int:
     close_context, close_page = False, False
@@ -318,21 +246,16 @@ async def get_async_playwright_scale_factor(browser: Union[AsyncContext, AsyncBr
 
 
 def get_sync_scale_factor(browser: sync_browsers) -> int:
-    if isinstance(browser, SeleniumChrome) or isinstance(browser, DriverlessSyncChrome):
-        return get_sync_selenium_scale_factor(browser)
-    elif isinstance(browser, SyncContext) or isinstance(browser, SyncBrowser):
+    if isinstance(browser, SyncContext) or isinstance(browser, SyncBrowser):
         return get_sync_playwright_scale_factor(browser)
 
     raise ValueError("Invalid browser type.")
 
 
 async def get_async_scale_factor(browser: async_browsers) -> int:
-    if isinstance(browser, DriverlessAsyncChrome):
-        return await get_async_selenium_scale_factor(browser)
-    elif isinstance(browser, AsyncContext) or isinstance(browser, AsyncBrowser):
+    if isinstance(browser, AsyncContext) or isinstance(browser, AsyncBrowser):
         return await get_async_playwright_scale_factor(browser)
 
     raise ValueError("Invalid browser type.")
 
 
-__all__ = ["SeleniumChrome", "DriverlessSyncChrome", "DriverlessAsyncChrome"]
