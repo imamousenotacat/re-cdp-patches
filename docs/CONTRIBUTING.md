@@ -1,5 +1,7 @@
 # How to develop on this project
 
+USELESS, THERE IS NO 'MAKE' TO BE FOUND IN THIS PROJECT 
+
 Botright welcomes contributions from the community.
 
 **You need PYTHON3!**

@@ -11,7 +11,6 @@ filterwarnings = [
 ]
 
 [tool.mypy]
-mypy_path = "botright"
 check_untyped_defs = true
 disallow_any_generics = true
 ignore_missing_imports = true

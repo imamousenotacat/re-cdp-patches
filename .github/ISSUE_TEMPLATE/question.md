@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Ask a question about Botright
+about: Ask a question about Patchright
 title: '[Question] '
 labels: question, help wanted, documentation
 assignees: ''

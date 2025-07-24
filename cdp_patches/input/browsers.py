@@ -7,22 +7,29 @@ import requests
 from websockets.sync import client
 
 try:
-    from playwright.async_api import Browser as AsyncBrowser
-    from playwright.async_api import BrowserContext as AsyncContext
-    from playwright.async_api import Error as AsyncError
-    from playwright.async_api import Error as SyncError
-    from playwright.sync_api import Browser as SyncBrowser
-    from playwright.sync_api import BrowserContext as SyncContext
+    from patchright.async_api import Browser as PatchrightAsyncBrowser
+    from patchright.async_api import BrowserContext as PatchrightAsyncContext
+    from patchright.async_api import Error as PatchrightAsyncError
+    from patchright.async_api import Error as PatchrightSyncError
+    from patchright.sync_api import Browser as PatchrightSyncBrowser
+    from patchright.sync_api import BrowserContext as PatchrightSyncContext
+    from playwright.async_api import Browser as PlaywrightAsyncBrowser
+    from playwright.async_api import BrowserContext as PlaywrightAsyncContext
+    from playwright.async_api import Error as PlaywrightAsyncError
+    from playwright.async_api import Error as PlaywrightSyncError
+    from playwright.sync_api import Browser as PlaywrightSyncBrowser
+    from playwright.sync_api import BrowserContext as PlaywrightSyncContext
+    AsyncBrowser = PatchrightAsyncBrowser | PlaywrightAsyncBrowser
+    AsyncContext = PatchrightAsyncContext | PlaywrightAsyncContext
+    AsyncError = PatchrightAsyncError | PlaywrightAsyncError
+    SyncError = PatchrightSyncError | PlaywrightSyncError
+    SyncBrowser = PatchrightSyncBrowser | PlaywrightSyncBrowser
+    SyncContext = PatchrightSyncContext | PlaywrightSyncContext
 except ImportError:
     AsyncBrowser: Type["AsyncBrowser"] = "AsyncBrowser"  # type: ignore[no-redef]
     AsyncContext: Type["AsyncContext"] = "AsyncContext"  # type: ignore[no-redef]
     SyncBrowser: Type["SyncBrowser"] = "SyncBrowser"  # type: ignore[no-redef]
     SyncContext: Type["SyncContext"] = "SyncContext"  # type: ignore[no-redef]
-
-try:
-    from botright.extended_typing import BrowserContext as BotrightContext
-except ImportError:
-    BotrightContext: Type["BotrightContext"] = "BotrightContext"  # type: ignore[no-redef]
 
 try:
     from selenium.webdriver import Chrome as SeleniumChrome
@@ -36,9 +43,9 @@ except ImportError:
     DriverlessAsyncChrome: Type["DriverlessAsyncChrome"] = "DriverlessAsyncChrome"  # type: ignore[no-redef]
     DriverlessSyncChrome: Type["DriverlessSyncChrome"] = "DriverlessSyncChrome"  # type: ignore[no-redef]
 
-all_browsers = Union[AsyncContext, AsyncBrowser, SyncContext, SyncBrowser, BotrightContext, SeleniumChrome, DriverlessAsyncChrome, DriverlessSyncChrome]
+all_browsers = Union[AsyncContext, AsyncBrowser, SyncContext, SyncBrowser, SeleniumChrome, DriverlessAsyncChrome, DriverlessSyncChrome]
 sync_browsers = Union[SeleniumChrome, SyncContext, SyncBrowser, DriverlessSyncChrome]
-async_browsers = Union[AsyncContext, AsyncBrowser, BotrightContext, DriverlessAsyncChrome]
+async_browsers = Union[AsyncContext, AsyncBrowser, DriverlessAsyncChrome]
 
 
 class InternalProcessInfo(TypedDict):
@@ -134,8 +141,8 @@ def get_sync_playwright_browser_pid(browser: Union[SyncContext, SyncBrowser]) ->
     return browser_info["id"]
 
 
-async def get_async_playwright_browser_pid(browser: Union[AsyncContext, AsyncBrowser, BotrightContext]) -> int:
-    if isinstance(browser, AsyncContext) or isinstance(browser, BotrightContext):
+async def get_async_playwright_browser_pid(browser: Union[AsyncContext, AsyncBrowser]) -> int:
+    if isinstance(browser, AsyncContext) or isinstance(browser):
         main_browser = browser.browser
         assert main_browser
         cdp_session = await main_browser.new_browser_cdp_session()
@@ -162,7 +169,7 @@ def get_sync_browser_pid(browser: sync_browsers) -> int:
 async def get_async_browser_pid(browser: async_browsers) -> int:
     if isinstance(browser, DriverlessAsyncChrome):
         return await get_async_selenium_browser_pid(browser)
-    elif isinstance(browser, AsyncContext) or isinstance(browser, AsyncBrowser) or isinstance(browser, BotrightContext):
+    elif isinstance(browser, AsyncContext) or isinstance(browser, AsyncBrowser):
         return await get_async_playwright_browser_pid(browser)
 
     raise ValueError("Invalid browser type.")
@@ -247,9 +254,9 @@ def get_sync_playwright_scale_factor(browser: Union[SyncContext, SyncBrowser]) -
     return scale_factor
 
 
-async def get_async_playwright_scale_factor(browser: Union[AsyncContext, AsyncBrowser, BotrightContext]) -> int:
+async def get_async_playwright_scale_factor(browser: Union[AsyncContext, AsyncBrowser]) -> int:
     close_context, close_page = False, False
-    if isinstance(browser, AsyncContext) or isinstance(browser, BotrightContext):
+    if isinstance(browser, AsyncContext):
         context = browser
     elif isinstance(browser, AsyncBrowser):
         if any(browser.contexts):
@@ -321,7 +328,7 @@ def get_sync_scale_factor(browser: sync_browsers) -> int:
 async def get_async_scale_factor(browser: async_browsers) -> int:
     if isinstance(browser, DriverlessAsyncChrome):
         return await get_async_selenium_scale_factor(browser)
-    elif isinstance(browser, AsyncContext) or isinstance(browser, AsyncBrowser) or isinstance(browser, BotrightContext):
+    elif isinstance(browser, AsyncContext) or isinstance(browser, AsyncBrowser):
         return await get_async_playwright_scale_factor(browser)
 
     raise ValueError("Invalid browser type.")

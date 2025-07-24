@@ -32,7 +32,7 @@ with sync_playwright() as playwright:
     sync_input.click("left", x, y)
 ```
 
-## Async Usage (Async Playwright / Botright)
+## Async Usage (Async Playwright / Patchright)
 
 ```python
 import asyncio
