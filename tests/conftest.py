@@ -94,8 +94,9 @@ def run_around_tests():
     yield
     test_server.stop()
 
+
 # tests\conftest.py:98: error: Value of type variable "_R" of "fixture" cannot be "Generator[Server, None, None]"  [type-var]
-# and I DON'T WANT TO GET INTO THAT HOLE NOW 
+# and I DON'T WANT TO GET INTO THAT HOLE NOW
 @no_type_check
 @pytest_asyncio.fixture
 def server() -> Generator[Server, None, None]:
