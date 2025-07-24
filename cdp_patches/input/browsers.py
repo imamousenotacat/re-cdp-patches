@@ -10,19 +10,19 @@ try:
     from patchright.async_api import Browser as PatchrightAsyncBrowser
     from patchright.async_api import BrowserContext as PatchrightAsyncContext
     from patchright.async_api import Error as PatchrightAsyncError
-    from patchright.async_api import Error as PatchrightSyncError
+    from patchright.sync_api import Error as PatchrightSyncError
     from patchright.sync_api import Browser as PatchrightSyncBrowser
     from patchright.sync_api import BrowserContext as PatchrightSyncContext
     from playwright.async_api import Browser as PlaywrightAsyncBrowser
     from playwright.async_api import BrowserContext as PlaywrightAsyncContext
     from playwright.async_api import Error as PlaywrightAsyncError
-    from playwright.async_api import Error as PlaywrightSyncError
+    from playwright.sync_api import Error as PlaywrightSyncError
     from playwright.sync_api import Browser as PlaywrightSyncBrowser
     from playwright.sync_api import BrowserContext as PlaywrightSyncContext
     AsyncBrowser = PatchrightAsyncBrowser | PlaywrightAsyncBrowser
     AsyncContext = PatchrightAsyncContext | PlaywrightAsyncContext
-    AsyncError = PatchrightAsyncError | PlaywrightAsyncError
-    SyncError = PatchrightSyncError | PlaywrightSyncError
+    AsyncError = (PatchrightAsyncError, PlaywrightAsyncError)
+    SyncError = (PatchrightSyncError, PlaywrightSyncError)
     SyncBrowser = PatchrightSyncBrowser | PlaywrightSyncBrowser
     SyncContext = PatchrightSyncContext | PlaywrightSyncContext
 except ImportError:
@@ -142,7 +142,7 @@ def get_sync_playwright_browser_pid(browser: Union[SyncContext, SyncBrowser]) ->
 
 
 async def get_async_playwright_browser_pid(browser: Union[AsyncContext, AsyncBrowser]) -> int:
-    if isinstance(browser, AsyncContext) or isinstance(browser):
+    if isinstance(browser, AsyncContext):
         main_browser = browser.browser
         assert main_browser
         cdp_session = await main_browser.new_browser_cdp_session()
@@ -210,7 +210,7 @@ def get_sync_playwright_scale_factor(browser: Union[SyncContext, SyncBrowser]) -
     else:
         page = context.new_page()
         close_page = True
-    cdp_session = context.new_cdp_session(page)
+    cdp_session = context.new_cdp_session(page)  # type: ignore[arg-type]
 
     time1 = time.perf_counter()
     while (time.perf_counter() - time1) <= 10:
@@ -243,11 +243,11 @@ def get_sync_playwright_scale_factor(browser: Union[SyncContext, SyncBrowser]) -
     else:
         raise TimeoutError("Runtime.evaluate did not run properly within 30 seconds.")
 
-    with suppress(SyncError):
+    with suppress(*SyncError):
         if close_page:
             page.close()
 
-    with suppress(SyncError):
+    with suppress(*SyncError):
         if close_context:
             context.close()
 
@@ -272,7 +272,7 @@ async def get_async_playwright_scale_factor(browser: Union[AsyncContext, AsyncBr
     else:
         page = await context.new_page()
         close_page = True
-    cdp_session = await context.new_cdp_session(page)
+    cdp_session = await context.new_cdp_session(page)  # type: ignore[arg-type]
 
     time1 = time.perf_counter()
     while (time.perf_counter() - time1) <= 10:
@@ -305,11 +305,11 @@ async def get_async_playwright_scale_factor(browser: Union[AsyncContext, AsyncBr
     else:
         raise TimeoutError("Runtime.evaluate did not run properly within 30 seconds.")
 
-    with suppress(SyncError):
+    with suppress(*SyncError):
         if close_page:
             await page.close()
 
-    with suppress(SyncError):
+    with suppress(*SyncError):
         if close_context:
             await context.close()
 
