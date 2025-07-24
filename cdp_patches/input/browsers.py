@@ -1,10 +1,8 @@
-import json
 import time
 from contextlib import suppress
 from typing import Dict, List, Type, TypedDict, Union
 
 import requests
-from websockets.sync import client
 
 try:
     from patchright.async_api import Browser as PatchrightAsyncBrowser

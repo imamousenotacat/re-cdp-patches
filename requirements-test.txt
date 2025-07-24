@@ -10,4 +10,3 @@ playwright>=1.44.0
 re-patchright>=1.52.10
 twisted>=24.3.0
 types-requests>=2.31
-webdriver_manager>=4.0.1

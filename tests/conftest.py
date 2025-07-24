@@ -6,7 +6,6 @@ from playwright.async_api import Page as AsyncPage
 from playwright.async_api import async_playwright
 from playwright.sync_api import Page as SyncPage
 from playwright.sync_api import sync_playwright
-from webdriver_manager.chrome import ChromeDriverManager
 
 from cdp_patches.input import AsyncInput, SyncInput
 
