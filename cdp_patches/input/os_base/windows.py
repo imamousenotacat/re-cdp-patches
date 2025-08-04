@@ -75,8 +75,11 @@ class WindowsBase:
             self.browser_window = get_top_window(self.win32_app, windows)
 
         for child in self.browser_window.iter_children():
+            # The original code was flawed because it returns the last matching child, which is not guaranteed to be the active tab.
+            # Now I'm returning the first one which JUST EMPIRICALLY seems to be the correct one. I couldn't find a better method for this
             if child.element_info.class_name == "Chrome_RenderWidgetHostHWND":
                 self.browser_window = child
+                break
 
         self.hwnd = self.browser_window.handle
         # Perform Window Checks
@@ -113,8 +116,11 @@ class WindowsBase:
             self.browser_window = get_top_window(self.win32_app, windows)
 
         for child in self.browser_window.iter_children():
+            # The original code was flawed because it returns the last matching child, which is not guaranteed to be the active tab.
+            # Now I'm returning the first one which JUST EMPIRICALLY seems to be the correct one. I couldn't find a better method for this
             if child.element_info.class_name == "Chrome_RenderWidgetHostHWND":
                 self.browser_window = child
+                break
 
         self.hwnd = self.browser_window.handle
         # Perform Window Checks

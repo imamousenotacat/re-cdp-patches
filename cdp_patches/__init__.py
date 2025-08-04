@@ -1,7 +1,7 @@
 import platform
 import warnings
 
-VERSION = "0.9"
+VERSION = "0.9.1"
 
 system_name = platform.system()
 if system_name == "Windows":
